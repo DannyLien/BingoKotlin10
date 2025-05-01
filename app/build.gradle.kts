@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -35,14 +37,21 @@ android {
     }
 
     buildFeatures {
-        //    	    compose = true
         viewBinding = true
     }
+
 
 }
 
 dependencies {
-
+    // FireDatabase :: Auth , RealTime , UI
+    // https://firebase.google.com/docs/android/setup?hl=zh-tw
+    implementation("com.google.firebase:firebase-auth:23.2.0")
+    implementation("com.google.firebase:firebase-database:21.0.0")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.firebaseui:firebase-ui-database:8.0.2")
+    implementation("com.google.gms:google-services:4.4.2")
+//
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

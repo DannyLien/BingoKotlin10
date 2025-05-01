@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.home.bingo" />
+                  <option name="mobileSdkAppId" value="1:950651668790:android:0c9c6480e75b3d7bb04b97" />
+                  <option name="projectId" value="bingo2025-e9439" />
+                  <option name="projectNumber" value="950651668790" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
