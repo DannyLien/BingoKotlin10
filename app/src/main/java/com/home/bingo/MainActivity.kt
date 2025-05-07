@@ -194,6 +194,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, ValueE
         super.onStop()
         auth.removeAuthStateListener(this)
         adapter.stopListening()
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
