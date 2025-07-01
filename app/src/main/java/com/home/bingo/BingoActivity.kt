@@ -221,53 +221,55 @@ class BingoActivity : AppCompatActivity() {
 
     val statusListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            val status = snapshot.value as Long
-            when (status.toInt()) {
-                Room.STATUS_INIT -> ""
-                Room.STATUS_CREATOR -> {
-                    tvInfo.text = "等對手加入"
-                }
-
-                Room.STATUS_JOINT -> {
-                    tvInfo.text = "對手已加入"
-                    FirebaseDatabase.getInstance().getReference("rooms")
-                        .child(roomId.toString()).child("status")
-                        .setValue(Room.STATUS_CREATED_TURN)
-                }
-
-                Room.STATUS_CREATED_TURN -> {
-                    myTurn = creator
-                }
-
-                Room.STATUS_JOINTED_TURN -> {
-                    myTurn = !creator
-                }
-
-                Room.STATUS_CREATED_BINGO -> {
-                    if (!creator) {
-                        AlertDialog.Builder(this@BingoActivity)
-                            .setTitle(" Game Info ")
-                            .setMessage(" You Loss ")
-                            .setIcon(R.drawable.crying)
-                            .setPositiveButton("OK") { ok, which ->
-                                endGame()
-                            }
-                            .setNegativeButton("Cancel", null)
-                            .show()
+            if (snapshot.getValue() != null) {
+                val status = snapshot.value as Long
+                when (status.toInt()) {
+                    Room.STATUS_INIT -> ""
+                    Room.STATUS_CREATOR -> {
+                        tvInfo.text = "等對手加入"
                     }
-                }
 
-                Room.STATUS_JOINTED_BINGO -> {
-                    if (creator) {
-                        AlertDialog.Builder(this@BingoActivity)
-                            .setTitle(" Game Info ")
-                            .setMessage(" You Loss ")
-                            .setIcon(R.drawable.crying)
-                            .setPositiveButton("OK") { ok, which ->
-                                endGame()
-                            }
-                            .setNegativeButton("Cancel", null)
-                            .show()
+                    Room.STATUS_JOINT -> {
+                        tvInfo.text = "對手已加入"
+                        FirebaseDatabase.getInstance().getReference("rooms")
+                            .child(roomId.toString()).child("status")
+                            .setValue(Room.STATUS_CREATED_TURN)
+                    }
+
+                    Room.STATUS_CREATED_TURN -> {
+                        myTurn = creator
+                    }
+
+                    Room.STATUS_JOINTED_TURN -> {
+                        myTurn = !creator
+                    }
+
+                    Room.STATUS_CREATED_BINGO -> {
+                        if (!creator) {
+                            AlertDialog.Builder(this@BingoActivity)
+                                .setTitle(" Game Info ")
+                                .setMessage(" You Loss ")
+                                .setIcon(R.drawable.crying)
+                                .setPositiveButton("OK") { ok, which ->
+                                    endGame()
+                                }
+                                .setNegativeButton("Cancel", null)
+                                .show()
+                        }
+                    }
+
+                    Room.STATUS_JOINTED_BINGO -> {
+                        if (creator) {
+                            AlertDialog.Builder(this@BingoActivity)
+                                .setTitle(" Game Info ")
+                                .setMessage(" You Loss ")
+                                .setIcon(R.drawable.crying)
+                                .setPositiveButton("OK") { ok, which ->
+                                    endGame()
+                                }
+                                .setNegativeButton("Cancel", null)
+                                .show()
+                        }
                     }
                 }
             }
