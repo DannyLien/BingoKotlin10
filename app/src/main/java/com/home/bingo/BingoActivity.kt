@@ -33,7 +33,7 @@ class BingoActivity : AppCompatActivity() {
             field = value
             tvInfo.setText(if (value) "請選號" else "等對手選號")
         }
-    private var roomId: String? = null
+    private var roomId: String = ""
     private val TAG: String? = BingoActivity::class.java.simpleName
     private lateinit var binding: ActivityBingoBinding
     private lateinit var randomNumbers: MutableList<Int>
@@ -50,22 +50,22 @@ class BingoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        roomId = intent.getStringExtra("ROOM_ID")
+        roomId = intent.getStringExtra("ROOM_ID").toString()
         creator = intent.getBooleanExtra("IS_CREATOR", false)
         Log.d(TAG, "onCreate: bingo- intent- ${roomId}  , ${creator}")
 
         if (creator) {
             for (i in 0 until NUMBER_COUNT) {
                 FirebaseDatabase.getInstance().getReference("rooms")
-                    .child(roomId.toString()).child("numbers").child((i + 1).toString())
+                    .child(roomId).child("numbers").child((i + 1).toString())
                     .setValue(false)
             }
             FirebaseDatabase.getInstance().getReference("rooms")
-                .child(roomId.toString()).child("status")
+                .child(roomId).child("status")
                 .setValue(Room.STATUS_CREATOR)
         } else {
             FirebaseDatabase.getInstance().getReference("rooms")
-                .child(roomId.toString()).child("status")
+                .child(roomId).child("status")
                 .setValue(Room.STATUS_JOINT)
         }
         generateRandomNumber()
@@ -100,7 +100,7 @@ class BingoActivity : AppCompatActivity() {
         recy.setHasFixedSize(true)
         recy.layoutManager = GridLayoutManager(this, 5)
         val query = FirebaseDatabase.getInstance().getReference("rooms")
-            .child(roomId.toString()).child("numbers").orderByKey()
+            .child(roomId).child("numbers").orderByKey()
         val options = FirebaseRecyclerOptions.Builder<Boolean>()
             .setQuery(query, Boolean::class.java).build()
         adapter = object : FirebaseRecyclerAdapter<Boolean, NumberHolder>(options) {
@@ -126,7 +126,7 @@ class BingoActivity : AppCompatActivity() {
                     numberMap.get(snapshotKey)?.picked = true
                     if (myTurn) {
                         FirebaseDatabase.getInstance().getReference("rooms")
-                            .child(roomId.toString()).child("status")
+                            .child(roomId).child("status")
                             .setValue(if (creator) Room.STATUS_JOINTED_TURN else Room.STATUS_CREATED_TURN)
                     }
                     var bingo = 0
@@ -160,7 +160,7 @@ class BingoActivity : AppCompatActivity() {
                     if (bingo > 0) {
                         Log.d(TAG, "onChildChanged: bingo- ${bingo}")
                         FirebaseDatabase.getInstance().getReference("rooms")
-                            .child(roomId.toString()).child("status")
+                            .child(roomId).child("status")
                             .setValue(if (creator) Room.STATUS_CREATED_BINGO else Room.STATUS_JOINTED_BINGO)
                         AlertDialog.Builder(this@BingoActivity)
                             .setTitle(" Game Info ")
@@ -169,7 +169,6 @@ class BingoActivity : AppCompatActivity() {
                             .setPositiveButton("OK") { ok, which ->
                                 endGame()
                             }
-                            .setNegativeButton("Cancel", null)
                             .show()
                     }
                 }
@@ -182,7 +181,7 @@ class BingoActivity : AppCompatActivity() {
                     if (myTurn) {
                         val number = buttons.get(position).number
                         FirebaseDatabase.getInstance().getReference("rooms")
-                            .child(roomId.toString()).child("numbers").child(number.toString())
+                            .child(roomId).child("numbers").child(number.toString())
                             .setValue(true)
                     }
                 }
@@ -197,11 +196,11 @@ class BingoActivity : AppCompatActivity() {
 
     private fun endGame() {
         FirebaseDatabase.getInstance().getReference("rooms")
-            .child(roomId.toString()).child("status")
+            .child(roomId).child("status")
             .removeEventListener(statusListener)
         if (creator) {
             FirebaseDatabase.getInstance().getReference("rooms")
-                .child(roomId.toString()).removeValue()
+                .child(roomId).removeValue()
         }
         finish()
     }
@@ -210,7 +209,7 @@ class BingoActivity : AppCompatActivity() {
         super.onStart()
         adapter.startListening()
         FirebaseDatabase.getInstance().getReference("rooms")
-            .child(roomId.toString()).child("status")
+            .child(roomId).child("status")
             .addValueEventListener(statusListener)
     }
 
@@ -232,7 +231,7 @@ class BingoActivity : AppCompatActivity() {
                     Room.STATUS_JOINT -> {
                         tvInfo.text = "對手已加入"
                         FirebaseDatabase.getInstance().getReference("rooms")
-                            .child(roomId.toString()).child("status")
+                            .child(roomId).child("status")
                             .setValue(Room.STATUS_CREATED_TURN)
                     }
 
@@ -253,7 +252,6 @@ class BingoActivity : AppCompatActivity() {
                                 .setPositiveButton("OK") { ok, which ->
                                     endGame()
                                 }
-                                .setNegativeButton("Cancel", null)
                                 .show()
                         }
                     }
@@ -267,7 +265,6 @@ class BingoActivity : AppCompatActivity() {
                                 .setPositiveButton("OK") { ok, which ->
                                     endGame()
                                 }
-                                .setNegativeButton("Cancel", null)
                                 .show()
                         }
                     }
@@ -276,7 +273,6 @@ class BingoActivity : AppCompatActivity() {
         }
 
         override fun onCancelled(error: DatabaseError) {
-
         }
     }
 

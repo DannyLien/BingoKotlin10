@@ -4,8 +4,12 @@
 
     <item
         android:id="@+id/action_signout"
-        android:title="Sign OUT" />
+        android:icon="@drawable/baseline_logout_24"
+        android:title="Sign OUT"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_exit"
-        android:title="Exit" />
+        android:icon="@android:drawable/ic_delete"
+        android:title="Exit"
+        app:showAsAction="ifRoom" />
 </menu>
